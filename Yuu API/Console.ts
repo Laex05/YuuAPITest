@@ -1,6 +1,8 @@
+import { Async } from "./Async";
 import { Color } from "./Basic Types/Color";
 import { Quaternion } from "./Basic Types/Quaternion";
 import { Vector3 } from "./Basic Types/Vector3";
+import { Crypto } from "./Crypto";
 import { Entity } from "./Entity/Entity";
 import { Files } from "./Files";
 import { registerStart } from "./RegisterStart";
@@ -15,7 +17,7 @@ const orgLog = console.log;
 let isInitialized = false;
 let startedTime = Date.now();
 let isMainVM = false;
-let consoleLogFileName = '';
+let consoleLogFileName = Crypto.generateRandomV4UUID();
 
 registerStart(start, 0);
 function start() {
@@ -25,12 +27,11 @@ function start() {
     const vmPath = Godot.files.folder.getVMPath();
 
     if ('user://worlds/defaultFiles' === vmPath) {
+      Files.folder.deleteContents('user://cache', 'console');
+
       isMainVM = true;
 
-      consoleLogFileName = 'MainVM';
-    }
-    else {
-      consoleLogFileName = vmPath.substring(14)
+      Async.setInterval(() => { updateText(); }, 3_000);
     }
 
     console.log = (...args: any[]) => {
