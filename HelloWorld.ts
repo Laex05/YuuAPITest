@@ -1,7 +1,7 @@
 import { Vector3 } from "./Yuu API/Basic Types/Vector3";
 import { inWorldConsole } from "./Yuu API/Console";
 import { registerStart } from "./Yuu API/RegisterStart";
-import { Async } from "./Async";
+import { Async } from "./Yuu API/Async";
 
 
 // Example file, feel free to rename and make your own scripts (do not use Main.ts as it could break a lot of basic Yuu API features)
