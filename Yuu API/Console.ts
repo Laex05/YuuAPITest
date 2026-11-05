@@ -18,6 +18,7 @@ let isInitialized = false;
 let startedTime = Date.now();
 let isMainVM = false;
 let consoleLogFileName = Crypto.generateRandomV4UUID();
+let logName = 'MainVM';
 
 registerStart(start, 0);
 function start() {
@@ -32,6 +33,9 @@ function start() {
       isMainVM = true;
 
       Async.setInterval(() => { updateText(); }, 3_000);
+    }
+    else {
+      logName = vmPath.substring(28);
     }
 
     console.log = (...args: any[]) => {
@@ -51,7 +55,12 @@ function start() {
         history.shift();
       }
 
-      Files.text.update('user://cache', 'console', consoleLogFileName, 'json', JSON.stringify(history));
+      const logJSON: LogJSON = {
+        name: logName,
+        logs: history,
+      }
+
+      Files.text.update('user://cache', 'console', consoleLogFileName, 'json', JSON.stringify(logJSON));
 
       updateText();
     };
@@ -69,6 +78,11 @@ export const inWorldConsole = {
 type LogEntry = {
   timestamp: number,
   args: string,
+}
+
+type LogJSON = {
+  name: string,
+  logs: LogEntry[],
 }
 
 const history: LogEntry[] = [];
@@ -130,10 +144,10 @@ function updateText() {
           const contents = Files.text.get('user://cache', 'console', fileName, extension);
 
           if (contents) {
-            const logs: LogEntry[] = JSON.parse(contents);
+            const logJSON: LogJSON = JSON.parse(contents);
 
-            for (let i = Math.max(0, logs.length - 20); i < logs.length; i++) {
-              displayHistory.push(logs[i]);
+            for (let i = Math.max(0, logJSON.logs.length - 20); i < logJSON.logs.length; i++) {
+              displayHistory.push({ timestamp: logJSON.logs[i].timestamp, args: logJSON.name + ': ' + logJSON.logs[i].args });
             }
           }
         }
