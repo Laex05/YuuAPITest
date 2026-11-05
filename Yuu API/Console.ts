@@ -57,12 +57,12 @@ function start() {
 
       const logJSON: LogJSON = {
         name: logName,
-        logs: history,
+        logs: [...history],
       }
 
-      Files.text.update('user://cache', 'console', consoleLogFileName, 'json', JSON.stringify(logJSON));
-
       updateText();
+      
+      Files.text.update('user://cache', 'console', consoleLogFileName, 'json', JSON.stringify(logJSON));
     };
   }
 }
