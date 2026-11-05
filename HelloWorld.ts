@@ -8,5 +8,6 @@ registerStart(start);
 function start() {
   inWorldConsole.visible(true, new Vector3(0, 1.5, -1.5));
 
+  Async.setInterval(() => {console.log('Hello World!');}, 1_500);
   console.log('Hello World!');
 }
